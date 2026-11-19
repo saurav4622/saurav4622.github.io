@@ -1,4 +1,32 @@
 // =========================================================================
+// 0. FIREBASE INITIALIZATION (Google Auth + Cloud Firestore Sync)
+// =========================================================================
+const firebaseConfig = {
+    apiKey: "AIzaSyDDSX3yVtdJwpHA9f80KToL82k18wDhx_g",
+    authDomain: "sourabh-portfolio-f9b84.firebaseapp.com",
+    projectId: "sourabh-portfolio-f9b84",
+    storageBucket: "sourabh-portfolio-f9b84.firebasestorage.app",
+    messagingSenderId: "19985433499",
+    appId: "1:19985433499:web:45316d9155d7abcf42573e",
+    measurementId: "G-QHWM7HFXRD"
+};
+
+const ADMIN_EMAIL = "paruisourabh4622@gmail.com";
+
+let auth = null;
+let googleProvider = null;
+let cloudDocRef = null;
+
+if (window.firebase) {
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    auth = firebase.auth();
+    googleProvider = new firebase.auth.GoogleAuthProvider();
+    cloudDocRef = firebase.firestore().collection("portfolio").doc("main");
+}
+
+// =========================================================================
 // 1. DEFAULT PORTFOLIO DATA (Synced with Sourabh Parui's Latest CV & Badges)
 // =========================================================================
 const DEFAULT_PORTFOLIO_DATA = {
@@ -160,11 +188,43 @@ function loadPortfolioState() {
     }
 }
 
-function persistPortfolioState() {
+async function persistPortfolioState() {
+    const { pin, ...cleanData } = portfolioState;
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolioState));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cleanData));
     } catch (err) {
-        showToast('Saved for session (storage limit reached)');
+        showToast('Local storage limit reached');
+    }
+
+    if (cloudDocRef && auth && auth.currentUser && auth.currentUser.email === ADMIN_EMAIL) {
+        try {
+            await cloudDocRef.set(cleanData);
+            showToast('Synced live to cloud!');
+        } catch (err) {
+            console.error('Firestore sync error:', err);
+            showToast('Cloud sync failed: ' + err.message);
+        }
+    }
+}
+
+async function loadCloudPortfolioState() {
+    if (!cloudDocRef) return;
+    try {
+        const snap = await cloudDocRef.get();
+        if (snap.exists && snap.data()) {
+            const cloudData = snap.data();
+            portfolioState = {
+                ...structuredClone(DEFAULT_PORTFOLIO_DATA),
+                ...cloudData,
+                profile: { ...DEFAULT_PORTFOLIO_DATA.profile, ...(cloudData.profile || {}) }
+            };
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolioState));
+            } catch (e) {}
+            renderAll();
+        }
+    } catch (err) {
+        console.warn('Cloud fetch skipped or unavailable:', err);
     }
 }
 
@@ -188,7 +248,7 @@ function showToast(message) {
     toastTimer = setTimeout(() => {
         toast.classList.remove('opacity-100', 'translate-y-0');
         toast.classList.add('opacity-0', 'translate-y-3');
-    }, 2400);
+    }, 2600);
 }
 
 function copyText(text, label) {
@@ -257,12 +317,10 @@ function renderProjects() {
 
         return `
             <article onclick="openProjectModal(${idx})" class="folder-wrapper pt-6 select-none">
-                <!-- Folder Back Tab -->
                 <div class="w-36 h-7 rounded-t-2xl bg-zinc-900 border-t border-x border-zinc-800 ml-4 flex items-center px-3 font-mono text-[10px] text-zinc-400">
                     0${idx + 1} // ${escapeHTML(proj.year)}
                 </div>
 
-                <!-- Fanning Preview Sheets -->
                 <div class="relative">
                     <div class="folder-paper folder-paper-1 absolute inset-x-5 -top-3 h-24 rounded-2xl bg-zinc-900 border border-zinc-700/80 p-3 pointer-events-none">
                         <div class="w-16 h-1.5 rounded bg-zinc-700 mb-2"></div>
@@ -275,7 +333,6 @@ function renderProjects() {
                         </div>
                     </div>
 
-                    <!-- Folder Front Cover -->
                     <div class="folder-front relative z-10 rounded-3xl bg-[#111113] border border-zinc-800 p-6 sm:p-7 flex flex-col justify-between min-h-[235px]">
                         <div>
                             <div class="flex items-start justify-between gap-3 mb-3">
@@ -311,7 +368,6 @@ function renderJourney() {
     const count = Math.max(1, items.length);
     desktopGrid.style.gridTemplateColumns = `repeat(${count}, minmax(0, 1fr))`;
 
-    // Exact column-center coordinates for SVG sine wave
     const points = items.map((_, idx) => {
         const xPct = ((idx + 0.5) / count) * 100;
         const xSvg = xPct * 10;
@@ -384,7 +440,6 @@ function renderJourney() {
         `<div class="h-full transition-transform duration-300 hover:-translate-y-1">${buildCardHTML(item)}</div>`
     ).join('');
 
-    // Mobile stack: latest active role on top
     const mobileItems = [...items].reverse();
     mobileStack.innerHTML = mobileItems.map((item, idx) => {
         const nodeOffset = idx % 2 === 0 ? '-left-[29px]' : '-left-[22px]';
@@ -454,7 +509,6 @@ function updateScrollAnimations() {
     const isDesktop = window.innerWidth >= 1024;
     const headerOffset = 64;
 
-    // A. Hero Portrait Scroll Animation
     if (heroTrack && heroPortrait) {
         const rect = heroTrack.getBoundingClientRect();
         const viewportH = window.innerHeight - headerOffset;
@@ -467,14 +521,12 @@ function updateScrollAnimations() {
             heroEditorial.style.opacity = editorialOpacity.toFixed(3);
             heroEditorial.style.transform = `translateY(${editorialY.toFixed(1)}px) scale(${(1 - progress * 0.05).toFixed(3)})`;
 
-            // Portrait glides up slightly into balanced center as banner fades
             const portraitScale = 1.02 - progress * 0.02;
             const portraitY = -progress * 42;
             const portraitRotateY = Math.sin(progress * Math.PI) * -6;
             const portraitRotateX = (1 - progress) * 3.5;
             heroPortrait.style.transform = `translateY(${portraitY.toFixed(1)}px) scale(${portraitScale.toFixed(3)}) rotateY(${portraitRotateY.toFixed(2)}deg) rotateX(${portraitRotateX.toFixed(2)}deg)`;
 
-            // Left & Right Bio Columns reveal cleanly alongside portrait
             const bioProgress = Math.min(1, Math.max(0, (progress - 0.12) / 0.55));
             const bioY = -progress * 42;
             heroLeftBio.style.opacity = bioProgress.toFixed(3);
@@ -505,7 +557,6 @@ function updateScrollAnimations() {
         }
     }
 
-    // B. Wavy Timeline SVG Draw-on-Scroll (Triggers immediately inside viewport)
     const desktopWavePath = document.getElementById('desktop-wave-path');
     if (desktopWavePath && wavePathLength > 0) {
         const journeyEl = document.getElementById('journey');
@@ -608,21 +659,46 @@ document.getElementById('project-modal').addEventListener('click', (e) => {
 });
 
 // =========================================================================
-// 6. OWNER-ONLY ADMIN CONSOLE (PIN: 2026)
+// 6. OWNER-ONLY ADMIN CONSOLE (Firebase Google Sign-In + PIN Fallback)
 // =========================================================================
 let isAdminUnlocked = false;
+
+async function signInAdminWithGoogle() {
+    if (!auth || !googleProvider) {
+        showToast('Firebase SDK not loaded in index.html');
+        return;
+    }
+    try {
+        const result = await auth.signInWithPopup(googleProvider);
+        if (result.user && result.user.email === ADMIN_EMAIL) {
+            isAdminUnlocked = true;
+            showAdminDashboard();
+            showToast('Signed in as ' + result.user.email);
+        } else {
+            await auth.signOut();
+            showToast('Access denied: unauthorized Google account');
+        }
+    } catch (err) {
+        console.error('Google Sign-In error:', err);
+        showToast('Google Sign-In failed: ' + err.message);
+    }
+}
 
 function openAdminModal() {
     document.getElementById('admin-modal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    if (isAdminUnlocked) {
+
+    const alreadyAuthed = auth && auth.currentUser && auth.currentUser.email === ADMIN_EMAIL;
+    if (isAdminUnlocked || alreadyAuthed) {
+        isAdminUnlocked = true;
         showAdminDashboard();
     } else {
         document.getElementById('admin-lock-screen').classList.remove('hidden');
         document.getElementById('admin-dashboard').classList.add('hidden');
         document.getElementById('admin-pin-input').value = '';
         document.getElementById('admin-pin-error').classList.add('hidden');
-        setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
+        // Automatically trigger Google Sign-In popup for quick admin unlock
+        signInAdminWithGoogle();
     }
 }
 
@@ -648,13 +724,19 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// Submitting the lock form triggers Google Sign-In (with local-only PIN fallback)
 document.getElementById('admin-pin-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const entered = document.getElementById('admin-pin-input').value.trim();
+    if (!entered) {
+        signInAdminWithGoogle();
+        return;
+    }
     if (entered === String(portfolioState.pin)) {
         isAdminUnlocked = true;
         showAdminDashboard();
-        showToast('Admin console unlocked');
+        showToast('Unlocked locally (sign in with Google to sync cloud)');
+        signInAdminWithGoogle();
     } else {
         document.getElementById('admin-pin-error').classList.remove('hidden');
     }
@@ -721,39 +803,71 @@ function populateAdminFields() {
     `).join('');
 }
 
-document.getElementById('edit-photo-file').addEventListener('change', (e) => {
+// Compress portrait photo via Canvas so it always fits cleanly inside Firestore (< 1MB)
+function compressPortraitImage(file, maxDim = 480, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+            const img = new Image();
+            img.onerror = reject;
+            img.onload = () => {
+                let { width, height } = img;
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+document.getElementById('edit-photo-file').addEventListener('change', async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-        portfolioState.profile.photoDataUrl = reader.result;
-        persistPortfolioState();
+    try {
+        const compressedDataUrl = await compressPortraitImage(file, 480, 0.8);
+        portfolioState.profile.photoDataUrl = compressedDataUrl;
         renderProfile();
-        showToast('Portrait photo updated');
-    };
-    reader.readAsDataURL(file);
+        await persistPortfolioState();
+    } catch (err) {
+        console.error(err);
+        showToast('Image processing failed');
+    }
 });
 
-function clearPortraitPhoto() {
+async function clearPortraitPhoto() {
     portfolioState.profile.photoDataUrl = '';
-    persistPortfolioState();
     renderProfile();
+    await persistPortfolioState();
     showToast('Restored default SVG portrait');
 }
 
-function saveProfileEdits() {
+async function saveProfileEdits() {
     portfolioState.profile.name = document.getElementById('edit-name').value.trim() || portfolioState.profile.name;
     portfolioState.profile.rolePill = document.getElementById('edit-role-pill').value.trim();
     portfolioState.profile.currentOrg = document.getElementById('edit-current-org').value.trim();
     portfolioState.profile.email = document.getElementById('edit-email').value.trim();
     portfolioState.profile.bio = document.getElementById('edit-bio').value.trim();
     portfolioState.profile.photoGrayscale = document.getElementById('edit-photo-bw').checked;
-    persistPortfolioState();
     renderProfile();
-    showToast('Profile saved');
+    await persistPortfolioState();
 }
 
-document.getElementById('add-project-form').addEventListener('submit', (e) => {
+document.getElementById('add-project-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     portfolioState.projects.unshift({
         id: 'proj-' + Date.now(),
@@ -766,21 +880,19 @@ document.getElementById('add-project-form').addEventListener('submit', (e) => {
         bullets: document.getElementById('new-proj-bullets').value.split('\n').map(s => s.trim()).filter(Boolean)
     });
     e.target.reset();
-    persistPortfolioState();
     renderProjects();
     populateAdminFields();
-    showToast('Project added');
+    await persistPortfolioState();
 });
 
-function deleteProject(idx) {
+async function deleteProject(idx) {
     portfolioState.projects.splice(idx, 1);
-    persistPortfolioState();
     renderProjects();
     populateAdminFields();
-    showToast('Project removed');
+    await persistPortfolioState();
 }
 
-document.getElementById('add-journey-form').addEventListener('submit', (e) => {
+document.getElementById('add-journey-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     portfolioState.journey.push({
         period: document.getElementById('new-j-period').value.trim(),
@@ -790,23 +902,21 @@ document.getElementById('add-journey-form').addEventListener('submit', (e) => {
         bullets: document.getElementById('new-j-bullets').value.split('\n').map(s => s.trim()).filter(Boolean)
     });
     e.target.reset();
-    persistPortfolioState();
     renderJourney();
     updateScrollAnimations();
     populateAdminFields();
-    showToast('Milestone added');
+    await persistPortfolioState();
 });
 
-function deleteJourney(idx) {
+async function deleteJourney(idx) {
     portfolioState.journey.splice(idx, 1);
-    persistPortfolioState();
     renderJourney();
     updateScrollAnimations();
     populateAdminFields();
-    showToast('Milestone removed');
+    await persistPortfolioState();
 }
 
-document.getElementById('add-cert-form').addEventListener('submit', (e) => {
+document.getElementById('add-cert-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     portfolioState.certifications.unshift({
         title: document.getElementById('new-cert-title').value.trim(),
@@ -817,18 +927,16 @@ document.getElementById('add-cert-form').addEventListener('submit', (e) => {
         featured: false
     });
     e.target.reset();
-    persistPortfolioState();
     renderCertifications();
     populateAdminFields();
-    showToast('Certification added');
+    await persistPortfolioState();
 });
 
-function deleteCert(idx) {
+async function deleteCert(idx) {
     portfolioState.certifications.splice(idx, 1);
-    persistPortfolioState();
     renderCertifications();
     populateAdminFields();
-    showToast('Certification removed');
+    await persistPortfolioState();
 }
 
 function updateAdminPin() {
@@ -838,16 +946,16 @@ function updateAdminPin() {
         return;
     }
     portfolioState.pin = val;
-    persistPortfolioState();
     document.getElementById('new-pin-input').value = '';
-    showToast('Admin PIN updated');
+    showToast('Local fallback PIN updated');
 }
 
-function resetPortfolioData() {
+async function resetPortfolioData() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     portfolioState = structuredClone(DEFAULT_PORTFOLIO_DATA);
     renderAll();
     populateAdminFields();
+    await persistPortfolioState();
     showToast('Restored default portfolio');
 }
 
@@ -947,6 +1055,10 @@ document.getElementById('chat-form').addEventListener('submit', (e) => {
     setTimeout(() => appendChatMessage('assistant', generateAssistantReply(text)), 240);
 });
 
-// Initial Render
-window.addEventListener('DOMContentLoaded', renderAll);
+// Initial Render + Cloud Fetch
+window.addEventListener('DOMContentLoaded', () => {
+    renderAll();
+    loadCloudPortfolioState();
+});
 renderAll();
+loadCloudPortfolioState();
