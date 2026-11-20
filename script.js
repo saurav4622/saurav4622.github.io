@@ -52,7 +52,7 @@ const DEFAULT_PORTFOLIO_DATA = {
             subtitle: 'Full-Stack AI-Driven MRI Diagnostics SaaS Platform',
             tags: ['React.js', 'Node.js', 'MongoDB', 'Docker', 'TensorFlow', 'JWT'],
             github: 'https://github.com/saurav4622',
-            live: 'https://github.com/saurav4622',
+            live: '',
             bullets: [
                 'Developed a full-stack AI-driven SaaS platform enabling secure MRI uploads, automated diagnostics, and real-time clinical explanations.',
                 'Built a responsive React UI integrated with a Node.js/Express REST API and MongoDB for secure user and medical report storage.',
@@ -202,6 +202,13 @@ function loadPortfolioState() {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return structuredClone(DEFAULT_PORTFOLIO_DATA);
         const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.projects)) {
+            parsed.projects.forEach(p => {
+                if (p.id === 'neurovision' && p.live === 'https://github.com/saurav4622') {
+                    p.live = '';
+                }
+            });
+        }
         return {
             ...structuredClone(DEFAULT_PORTFOLIO_DATA),
             ...parsed,
@@ -699,9 +706,12 @@ function openProjectModal(idx) {
 
     const ghBtn = document.getElementById('modal-github');
     const liveBtn = document.getElementById('modal-live');
-    ghBtn.href = proj.github || portfolioState.profile.github;
-    if (proj.live) {
-        liveBtn.href = proj.live;
+    const ghUrl = (proj.github || portfolioState.profile.github || '').trim();
+    const liveUrl = (proj.live || '').trim();
+
+    ghBtn.href = ghUrl;
+    if (liveUrl && liveUrl !== ghUrl) {
+        liveBtn.href = liveUrl;
         liveBtn.classList.remove('hidden');
     } else {
         liveBtn.classList.add('hidden');
@@ -724,6 +734,7 @@ document.getElementById('project-modal').addEventListener('click', (e) => {
 // 6. OWNER-ONLY ADMIN CONSOLE (Firebase Google Sign-In + PIN Fallback)
 // =========================================================================
 let isAdminUnlocked = false;
+let editingProjectIndex = null;
 
 async function signInAdminWithGoogle() {
     if (!auth || !googleProvider) {
@@ -840,7 +851,10 @@ function populateAdminFields() {
                 <p class="text-xs font-semibold text-white">${escapeHTML(pr.title)} <span class="text-zinc-500 font-mono">(${escapeHTML(pr.year)})</span></p>
                 <p class="text-[11px] text-zinc-400">${escapeHTML(pr.subtitle)}</p>
             </div>
-            <button type="button" onclick="deleteProject(${i})" class="px-3 py-1.5 rounded-lg bg-red-950/60 text-red-300 font-mono text-[10px] hover:bg-red-900/60">Delete</button>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="editProject(${i})" class="px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-200 font-mono text-[10px] hover:bg-zinc-700">Edit</button>
+                <button type="button" onclick="deleteProject(${i})" class="px-3 py-1.5 rounded-lg bg-red-950/60 text-red-300 font-mono text-[10px] hover:bg-red-900/60">Delete</button>
+            </div>
         </div>
     `).join('');
 
@@ -929,25 +943,90 @@ async function saveProfileEdits() {
     await persistPortfolioState();
 }
 
+function editProject(idx) {
+    const proj = portfolioState.projects[idx];
+    if (!proj) return;
+    editingProjectIndex = idx;
+    document.getElementById('new-proj-title').value = proj.title || '';
+    document.getElementById('new-proj-year').value = proj.year || '';
+    document.getElementById('new-proj-subtitle').value = proj.subtitle || '';
+    document.getElementById('new-proj-tags').value = (proj.tags || []).join(', ');
+    document.getElementById('new-proj-github').value = proj.github || '';
+    document.getElementById('new-proj-live').value = proj.live || '';
+    document.getElementById('new-proj-bullets').value = (proj.bullets || []).join('\n');
+
+    const submitBtn = document.querySelector('#add-project-form button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = 'Update Project';
+
+    const form = document.getElementById('add-project-form');
+    if (form) {
+        form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    const titleInput = document.getElementById('new-proj-title');
+    if (titleInput) titleInput.focus();
+}
+
 document.getElementById('add-project-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    portfolioState.projects.unshift({
-        id: 'proj-' + Date.now(),
-        title: document.getElementById('new-proj-title').value.trim(),
-        year: document.getElementById('new-proj-year').value.trim(),
-        subtitle: document.getElementById('new-proj-subtitle').value.trim(),
-        tags: document.getElementById('new-proj-tags').value.split(',').map(s => s.trim()).filter(Boolean),
-        github: document.getElementById('new-proj-github').value.trim() || portfolioState.profile.github,
-        live: document.getElementById('new-proj-live').value.trim(),
-        bullets: document.getElementById('new-proj-bullets').value.split('\n').map(s => s.trim()).filter(Boolean)
-    });
-    e.target.reset();
+    const title = document.getElementById('new-proj-title').value.trim();
+    const year = document.getElementById('new-proj-year').value.trim();
+    const subtitle = document.getElementById('new-proj-subtitle').value.trim();
+    const tags = document.getElementById('new-proj-tags').value.split(',').map(s => s.trim()).filter(Boolean);
+    const github = document.getElementById('new-proj-github').value.trim() || portfolioState.profile.github;
+    const live = document.getElementById('new-proj-live').value.trim();
+    const bullets = document.getElementById('new-proj-bullets').value.split('\n').map(s => s.trim()).filter(Boolean);
+
+    if (editingProjectIndex !== null && portfolioState.projects[editingProjectIndex]) {
+        const existing = portfolioState.projects[editingProjectIndex];
+        portfolioState.projects[editingProjectIndex] = {
+            ...existing,
+            title,
+            year,
+            subtitle,
+            tags,
+            github,
+            live,
+            bullets
+        };
+        editingProjectIndex = null;
+        const submitBtn = document.querySelector('#add-project-form button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = 'Add Project';
+        showToast('Project updated successfully');
+    } else {
+        portfolioState.projects.unshift({
+            id: 'proj-' + Date.now(),
+            title,
+            year,
+            subtitle,
+            tags,
+            github,
+            live,
+            bullets
+        });
+        showToast('Project added successfully');
+    }
+
+    if (e.target && e.target.reset) {
+        e.target.reset();
+    } else {
+        const formEl = document.getElementById('add-project-form');
+        if (formEl && formEl.reset) formEl.reset();
+    }
     renderProjects();
     populateAdminFields();
     await persistPortfolioState();
 });
 
 async function deleteProject(idx) {
+    if (editingProjectIndex === idx) {
+        editingProjectIndex = null;
+        const form = document.getElementById('add-project-form');
+        if (form) form.reset();
+        const submitBtn = document.querySelector('#add-project-form button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = 'Add Project';
+    } else if (editingProjectIndex !== null && idx < editingProjectIndex) {
+        editingProjectIndex--;
+    }
     portfolioState.projects.splice(idx, 1);
     renderProjects();
     populateAdminFields();
@@ -1014,6 +1093,11 @@ function updateAdminPin() {
 
 async function resetPortfolioData() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    editingProjectIndex = null;
+    const form = document.getElementById('add-project-form');
+    if (form) form.reset();
+    const submitBtn = document.querySelector('#add-project-form button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = 'Add Project';
     portfolioState = structuredClone(DEFAULT_PORTFOLIO_DATA);
     renderAll();
     populateAdminFields();
