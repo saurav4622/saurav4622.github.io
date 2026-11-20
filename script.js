@@ -2,7 +2,7 @@
 // 0. FIREBASE INITIALIZATION (Google Auth + Cloud Firestore Sync)
 // =========================================================================
 const firebaseConfig = {
-    apiKey: "AIzaSyDDSX3yVtdJwpHA9f80KToL82k18wDhx_g",
+    apiKey: "AIzaSyDDSX3yVtdJwpHA9f8OKToL82k18wDhx_g",
     authDomain: "sourabh-portfolio-f9b84.firebaseapp.com",
     projectId: "sourabh-portfolio-f9b84",
     storageBucket: "sourabh-portfolio-f9b84.firebasestorage.app",
