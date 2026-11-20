@@ -58,6 +58,18 @@ const DEFAULT_PORTFOLIO_DATA = {
                 'Built a responsive React UI integrated with a Node.js/Express REST API and MongoDB for secure user and medical report storage.',
                 'Integrated a CNN-based deep learning classifier trained on 34K images, reducing manual image review time by 40–55%.',
                 'Implemented role-based access control using JWT tokens and Dockerized the application for seamless cloud deployment.'
+            ],
+            flow: [
+                'MRI Upload via React UI',
+                'JWT Auth & Express API',
+                'CNN Inference (TensorFlow)',
+                'Report Generation',
+                'MongoDB Storage & Dashboard'
+            ],
+            impact: [
+                { label: '34K Images Trained', color: 'emerald' },
+                { label: '40–55% Faster Review', color: 'sky' },
+                { label: 'Dockerized Deploy', color: 'violet' }
             ]
         },
         {
@@ -72,6 +84,18 @@ const DEFAULT_PORTFOLIO_DATA = {
                 "Engineered a TensorFlow/Keras Convolutional Neural Network (CNN) to detect early signs of Alzheimer's disease from MRI scans.",
                 'Optimized model training via image preprocessing, data augmentation, and regularization, achieving up to 92% stage-detection accuracy.',
                 'Built automated Python batch-processing scripts for MRI datasets, increasing diagnostic throughput efficiency by 4x.'
+            ],
+            flow: [
+                'MRI Dataset Ingestion',
+                'Preprocessing & Augmentation',
+                'CNN Training (Keras)',
+                'Stage Classification',
+                'Batch Reporting'
+            ],
+            impact: [
+                { label: '92% Accuracy', color: 'emerald' },
+                { label: '4x Throughput', color: 'sky' },
+                { label: '4-Class Detection', color: 'amber' }
             ]
         }
     ],
@@ -634,6 +658,44 @@ function openProjectModal(idx) {
     document.getElementById('modal-tags').innerHTML = (proj.tags || []).map(t =>
         `<span class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 font-mono text-xs text-zinc-200">${escapeHTML(t)}</span>`
     ).join('');
+
+    // Render architecture flow pipeline
+    const flowContainer = document.getElementById('modal-flow');
+    if (flowContainer) {
+        if (proj.flow && proj.flow.length) {
+            flowContainer.innerHTML = proj.flow.map((step, i) => {
+                const arrow = i < proj.flow.length - 1
+                    ? '<span class="shrink-0 text-zinc-600 text-xs">→</span>'
+                    : '';
+                return `<span class="shrink-0 px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 font-mono text-[11px] text-zinc-200">${escapeHTML(step)}</span>${arrow}`;
+            }).join('');
+            flowContainer.parentElement.classList.remove('hidden');
+        } else {
+            flowContainer.parentElement.classList.add('hidden');
+        }
+    }
+
+    // Render impact metric pills
+    const impactContainer = document.getElementById('modal-impact');
+    if (impactContainer) {
+        if (proj.impact && proj.impact.length) {
+            const colorMap = {
+                emerald: 'bg-emerald-950/60 border-emerald-800 text-emerald-300',
+                sky: 'bg-sky-950/60 border-sky-800 text-sky-300',
+                violet: 'bg-violet-950/60 border-violet-800 text-violet-300',
+                amber: 'bg-amber-950/60 border-amber-800 text-amber-300',
+                rose: 'bg-rose-950/60 border-rose-800 text-rose-300'
+            };
+            const fallback = 'bg-zinc-900 border-zinc-700 text-zinc-200';
+            impactContainer.innerHTML = proj.impact.map(m => {
+                const cls = colorMap[m.color] || fallback;
+                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border font-mono text-[11px] font-medium ${cls}"><span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>${escapeHTML(m.label)}</span>`;
+            }).join('');
+            impactContainer.parentElement.classList.remove('hidden');
+        } else {
+            impactContainer.parentElement.classList.add('hidden');
+        }
+    }
 
     const ghBtn = document.getElementById('modal-github');
     const liveBtn = document.getElementById('modal-live');

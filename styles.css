@@ -91,3 +91,245 @@
         .chat-animate {
             animation: chatEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        .personal-footer {
+            display: flex;
+            min-height: max(600px, 100vh);
+            flex-direction: column;
+            background: #000;
+            color: #f8f7f4;
+            font-family: Inter, system-ui, sans-serif;
+        }
+        .footer-content {
+            display: flex;
+            width: min(100%, 1180px);
+            flex: 1;
+            flex-direction: column;
+            margin: 0 auto;
+            padding: clamp(36px, 6vw, 72px) clamp(20px, 4.5vw, 56px) 28px;
+            box-sizing: border-box;
+        }
+        .footer-columns {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.7fr) minmax(0, 1.2fr);
+            gap: 48px;
+        }
+        .footer-brand {
+            display: inline-block;
+            color: #f8f7f4;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.045em;
+            text-decoration: none;
+        }
+        .footer-role {
+            max-width: 350px;
+            margin: 12px 0 0;
+            color: #b5b5b5;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .footer-label {
+            margin: 5px 0 18px;
+            color: #b5b5b5;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .footer-explore ul {
+            display: grid;
+            gap: 11px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .footer-explore a,
+        .footer-social-links a,
+        .footer-email-link {
+            color: #f8f7f4;
+            font-size: 14px;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+        }
+        .footer-explore a,
+        .footer-social-links a {
+            color: #d3d3d3;
+        }
+        .footer-explore a:hover,
+        .footer-social-links a:hover,
+        .footer-email-link:hover {
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+        .footer-copy-actions,
+        .footer-social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            margin-top: 15px;
+        }
+        .footer-copy-button {
+            display: inline-flex;
+            max-width: 100%;
+            min-height: 36px;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 10px;
+            border: 1px solid #303030;
+            border-radius: 6px;
+            background: #101010;
+            color: #e8e8e8;
+            font: inherit;
+            font-size: 12px;
+            text-align: left;
+            cursor: pointer;
+            overflow-wrap: anywhere;
+        }
+        .footer-copy-button span:last-child {
+            color: #b5b5b5;
+            font-size: 10px;
+        }
+        .footer-copy-button:hover {
+            border-color: #777;
+        }
+        .footer-copyright {
+            margin: 20px 0 0;
+            color: #929292;
+            font-size: 12px;
+        }
+        .footer-signoff {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-top: auto;
+            padding-top: 52px;
+        }
+        .footer-signoff p {
+            margin: 0;
+            color: #f8f7f4;
+            font-size: clamp(27px, 4vw, 46px);
+            font-weight: 650;
+            letter-spacing: -0.05em;
+        }
+        .footer-back-top {
+            min-height: 42px;
+            padding: 9px 13px;
+            border: 1px solid #343434;
+            border-radius: 6px;
+            background: transparent;
+            color: #d0d0d0;
+            font: inherit;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .footer-back-top:hover {
+            border-color: #888;
+            color: #fff;
+        }
+        .crowd-scene {
+            position: relative;
+            width: 100%;
+            height: clamp(300px, 36vw, 430px);
+            flex: 0 0 auto;
+            overflow: hidden;
+            isolation: isolate;
+            background: #fff;
+            cursor: pointer;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        .crowd-scene:focus-visible {
+            z-index: 1;
+            outline: 4px solid #5685ff;
+            outline-offset: -5px;
+        }
+        .crowd-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 1;
+            width: 100%;
+            color: #ececec;
+            font-size: clamp(72px, 18.2vw, 315px);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        .crowd-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .crowd-canvas-front {
+            z-index: 4;
+        }
+        .footer-character {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            z-index: 3;
+            display: block;
+            width: auto;
+            height: min(365px, calc(100% - 24px));
+            max-width: 76vw;
+            pointer-events: none;
+            transform: translateX(-50%);
+        }
+        .crowd-caption {
+            padding: 13px 20px 16px;
+            background: #000;
+            color: #929292;
+            font-size: 12px;
+            text-align: center;
+        }
+        .personal-footer a:focus-visible,
+        .personal-footer button:focus-visible {
+            outline: 2px solid #f8f7f4;
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 700px) {
+            .personal-footer {
+                min-height: max(620px, 100vh);
+            }
+            .footer-content {
+                padding: 36px 22px 24px;
+            }
+            .footer-columns {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                gap: 34px 24px;
+            }
+            .footer-contact {
+                grid-column: 1 / -1;
+            }
+            .footer-signoff {
+                padding-top: 42px;
+            }
+            .crowd-scene {
+                height: 330px;
+            }
+            .footer-character {
+                height: min(310px, calc(100% - 24px));
+                max-width: 82vw;
+            }
+        }
+        @media (max-width: 375px) {
+            .crowd-watermark {
+                transform: translate(-50%, -50%) scaleX(0.86);
+            }
+            .footer-content {
+                padding-right: 18px;
+                padding-left: 18px;
+            }
+        }

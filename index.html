@@ -395,153 +395,58 @@
         </div>
     </section>
 
-    <!-- 7. MAIN CHARACTER MONOCHROME ILLUSTRATED FOOTER & CONTACT -->
-    <footer id="contact" class="pt-16 sm:pt-20 bg-obsidian">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 pb-12">
-            <!-- Top Footer Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-zinc-900">
-                <div class="md:col-span-5 space-y-4">
-                    <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">Let's talk.</h2>
-                    <p class="text-sm text-zinc-400 leading-relaxed max-w-md">
-                        Open to full-stack engineering roles, AI/ML collaborations, and freelance web architecture. Reach out directly or ask my AI assistant below.
-                    </p>
-                    <div class="flex flex-wrap gap-2.5 pt-2">
-                        <button type="button" id="copy-email-btn" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-white font-mono text-xs text-zinc-200 transition-all break-all text-left">
-                            <span id="footer-email-text">paruisourabh4622@gmail.com</span> <span class="text-zinc-500 ml-1">📋</span>
-                        </button>
-                        <button type="button" id="copy-phone-btn" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-white font-mono text-xs text-zinc-200 transition-all">
-                            <span id="footer-phone-text">+91-9548046977</span> <span class="text-zinc-500 ml-1">📋</span>
-                        </button>
-                    </div>
-                </div>
+        <!-- 7. PERSONAL CROWD FOOTER & CONTACT -->
+    <footer id="contact" class="personal-footer pt-20">
+        <div class="footer-content">
+            <div class="footer-columns">
+                <section class="footer-intro" aria-label="About Sourabh">
+                    <a class="footer-brand" href="#about">Sourabh.</a>
+                    <p class="footer-role">Analyst Trainee (CIS) @ Cognizant — Full-Stack &amp; AI/ML Engineer</p>
+                </section>
 
-                <div class="md:col-span-3 space-y-3 font-mono text-xs">
-                    <p class="text-zinc-500 uppercase tracking-wider">Explore</p>
-                    <ul class="space-y-2.5 text-zinc-300">
-                        <li><a href="#about" class="hover:text-white transition-colors">About</a></li>
-                        <li><a href="#skills" class="hover:text-white transition-colors">Tech Stack</a></li>
-                        <li><a href="#projects" class="hover:text-white transition-colors">Featured Projects</a></li>
-                        <li><a href="#journey" class="hover:text-white transition-colors">Experience &amp; Education</a></li>
-                        <li><a href="#certifications" class="hover:text-white transition-colors">Certifications</a></li>
+                <nav class="footer-explore" aria-label="Explore">
+                    <h2 class="footer-label">Explore</h2>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#skills">Tech stack</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#journey">Experience</a></li>
+                        <li><a href="#certifications">Certifications</a></li>
                     </ul>
-                </div>
+                </nav>
 
-                <div class="md:col-span-4 space-y-3 font-mono text-xs">
-                    <p class="text-zinc-500 uppercase tracking-wider">Connect &amp; Controls</p>
-                    <div class="flex flex-wrap gap-2">
-                        <a href="https://github.com/saurav4622" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-white text-zinc-200 transition-colors">GitHub ↗</a>
-                        <a href="https://www.linkedin.com/in/sourabh-parui" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-white text-zinc-200 transition-colors">LinkedIn ↗</a>
-                        <a href="https://www.credly.com/go/sc1csZrb" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-white text-zinc-200 transition-colors">Credly ↗</a>
-                        <button type="button" onclick="openAdminModal()" class="px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-white text-zinc-400 hover:text-white transition-colors">Admin 🔒</button>
+                <section class="footer-contact" aria-label="Get in touch">
+                    <h2 class="footer-label">Get in touch</h2>
+                    <a class="footer-email-link" href="mailto:paruisourabh4622@gmail.com">paruisourabh4622@gmail.com</a>
+                    <div class="footer-copy-actions">
+                        <button type="button" id="copy-email-btn" class="footer-copy-button" aria-label="Copy email address">
+                            <span id="footer-email-text">paruisourabh4622@gmail.com</span><span aria-hidden="true">Copy</span>
+                        </button>
+                        <button type="button" id="copy-phone-btn" class="footer-copy-button" aria-label="Copy phone number">
+                            <span id="footer-phone-text">+91-9548046977</span><span aria-hidden="true">Copy</span>
+                        </button>
                     </div>
-                    <p class="text-zinc-600 pt-2">© 2026 Sourabh Parui. Crafted in Kolkata, India.</p>
-                </div>
+                    <div class="footer-social-links">
+                        <a href="https://github.com/saurav4622" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                        <a href="https://www.linkedin.com/in/sourabh-parui" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+                    </div>
+                    <p class="footer-copyright">© 2026 Sourabh Parui</p>
+                </section>
             </div>
 
-            <!-- "See you around." Bar -->
-            <div class="pt-6 flex items-center justify-between gap-4">
-                <p class="text-2xl sm:text-4xl font-bold tracking-tight text-white">See you around.</p>
-                <a href="#about" class="font-mono text-xs text-zinc-400 hover:text-white transition-colors px-3 py-2 rounded-lg bg-zinc-900/70 border border-zinc-800">
-                    Back to top ↑
-                </a>
-            </div>
-        </div>
-
-        <!-- Monochrome Illustrated Crowd Banner (Inspired by the Reference Video) -->
-        <div class="w-full bg-white text-black border-t border-zinc-800 overflow-hidden relative select-none">
-            <div class="max-w-7xl mx-auto relative pt-6 sm:pt-10 px-2">
-                <!-- Oversized Background Watermark -->
-                <div class="text-center font-extrabold tracking-tighter text-[15vw] sm:text-[13vw] leading-none text-zinc-200/90 pointer-events-none">
-                    SOURABH
-                </div>
-                <!-- Hand-Drawn Style Monochrome Crowd SVG -->
-                <svg viewBox="0 0 1200 220" class="w-full h-auto -mt-[8vw] sm:-mt-[7vw] relative z-10 block" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Left Crowd Group -->
-                    <g stroke="#111111" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- Person 1 -->
-                        <circle cx="90" cy="115" r="24" fill="#ffffff"/>
-                        <path d="M66 112 C68 84, 112 84, 114 112" fill="#111111"/>
-                        <path d="M52 220 C54 166, 126 166, 128 220" fill="#ffffff"/>
-                        <circle cx="82" cy="116" r="2" fill="#111"/>
-                        <circle cx="98" cy="116" r="2" fill="#111"/>
-                        <path d="M84 126 Q90 131 96 126"/>
-
-                        <!-- Person 2 -->
-                        <circle cx="195" cy="98" r="26" fill="#ffffff"/>
-                        <path d="M168 95 C172 64, 218 64, 222 95" fill="#111111"/>
-                        <path d="M150 220 C155 152, 235 152, 240 220" fill="#f4f4f5"/>
-                        <rect x="179" y="93" width="13" height="9" rx="2" fill="none"/>
-                        <rect x="198" y="93" width="13" height="9" rx="2" fill="none"/>
-                        <line x1="192" y1="97" x2="198" y2="97"/>
-                        <path d="M189 110 Q195 115 201 110"/>
-
-                        <!-- Person 3 -->
-                        <circle cx="315" cy="118" r="25" fill="#ffffff"/>
-                        <path d="M288 115 C286 82, 342 82, 342 115" fill="#111111"/>
-                        <path d="M268 220 C272 162, 358 162, 362 220" fill="#ffffff"/>
-                        <circle cx="307" cy="118" r="2" fill="#111"/>
-                        <circle cx="323" cy="118" r="2" fill="#111"/>
-                        <path d="M308 128 Q315 134 322 128"/>
-
-                        <!-- Person 4 -->
-                        <circle cx="435" cy="104" r="24" fill="#ffffff"/>
-                        <path d="M408 102 C410 70, 460 70, 462 102" fill="#111111"/>
-                        <path d="M392 220 C396 156, 474 156, 478 220" fill="#e4e4e7"/>
-                        <circle cx="427" cy="104" r="2" fill="#111"/>
-                        <circle cx="443" cy="104" r="2" fill="#111"/>
-                        <path d="M429 114 Q435 119 441 114"/>
-
-                        <!-- Center Main Character (Standing Out in Dark Silhouette Hoodie) -->
-                        <path d="M538 220 C542 140, 658 140, 662 220 Z" fill="#111111"/>
-                        <rect x="586" y="114" width="28" height="28" rx="10" fill="#ffffff"/>
-                        <circle cx="600" cy="84" r="32" fill="#ffffff"/>
-                        <path d="M568 80 C568 42, 632 42, 632 80 C622 66, 578 66, 568 80 Z" fill="#111111"/>
-                        <rect x="580" y="79" width="16" height="11" rx="3" fill="#ffffff"/>
-                        <rect x="604" y="79" width="16" height="11" rx="3" fill="#ffffff"/>
-                        <line x1="596" y1="84" x2="604" y2="84"/>
-                        <circle cx="588" cy="84.5" r="2.2" fill="#111"/>
-                        <circle cx="612" cy="84.5" r="2.2" fill="#111"/>
-                        <path d="M591 100 Q600 106 609 100"/>
-                        <!-- Laptop badge on hoodie -->
-                        <rect x="584" y="172" width="32" height="20" rx="3" fill="#ffffff" stroke="#ffffff" stroke-width="2"/>
-                        <circle cx="600" cy="182" r="2.5" fill="#111111"/>
-
-                        <!-- Right Crowd Group -->
-                        <!-- Person 5 -->
-                        <circle cx="765" cy="105" r="25" fill="#ffffff"/>
-                        <path d="M738 102 C740 70, 790 70, 792 102" fill="#111111"/>
-                        <path d="M722 220 C726 156, 804 156, 808 220" fill="#ffffff"/>
-                        <circle cx="757" cy="105" r="2" fill="#111"/>
-                        <circle cx="773" cy="105" r="2" fill="#111"/>
-                        <path d="M758 115 Q765 121 772 115"/>
-
-                        <!-- Person 6 -->
-                        <circle cx="885" cy="116" r="24" fill="#ffffff"/>
-                        <path d="M858 114 C860 82, 910 82, 912 114" fill="#111111"/>
-                        <path d="M842 220 C846 164, 924 164, 928 220" fill="#f4f4f5"/>
-                        <circle cx="877" cy="116" r="2" fill="#111"/>
-                        <circle cx="893" cy="116" r="2" fill="#111"/>
-                        <path d="M879 126 Q885 130 891 126"/>
-
-                        <!-- Person 7 -->
-                        <circle cx="1005" cy="98" r="26" fill="#ffffff"/>
-                        <path d="M976 96 C978 62, 1032 62, 1034 96" fill="#111111"/>
-                        <path d="M960 220 C964 152, 1046 152, 1050 220" fill="#ffffff"/>
-                        <circle cx="997" cy="98" r="2" fill="#111"/>
-                        <circle cx="1013" cy="98" r="2" fill="#111"/>
-                        <path d="M998 110 Q1005 116 1012 110"/>
-
-                        <!-- Person 8 -->
-                        <circle cx="1115" cy="116" r="24" fill="#ffffff"/>
-                        <path d="M1089 113 C1092 84, 1138 84, 1141 113" fill="#111111"/>
-                        <path d="M1072 220 C1076 166, 1154 166, 1158 220" fill="#e4e4e7"/>
-                        <circle cx="1107" cy="116" r="2" fill="#111"/>
-                        <circle cx="1123" cy="116" r="2" fill="#111"/>
-                        <path d="M1109 126 Q1115 131 1121 126"/>
-                    </g>
-                </svg>
+            <div class="footer-signoff">
+                <p>See you around.</p>
+                <button type="button" class="footer-back-top" id="footer-back-top">Back to top ↑</button>
             </div>
         </div>
+
+        <div id="crowd-scene" class="crowd-scene" role="button" tabindex="0" aria-pressed="false" aria-label="Pause crowd animation" title="Pause or resume the crowd animation">
+            <div class="crowd-watermark" aria-hidden="true">SOURABH.</div>
+            <canvas id="crowd-canvas-rear" class="crowd-canvas crowd-canvas-rear" aria-hidden="true"></canvas>
+            <canvas id="footer-character" class="footer-character" role="img" aria-label="Sourabh's character artwork">Sourabh's character artwork</canvas>
+            <canvas id="crowd-canvas-front" class="crowd-canvas crowd-canvas-front" aria-hidden="true"></canvas>
+        </div>
+        <div class="crowd-caption">Finally, some traffic on my website.</div>
     </footer>
 
     <!-- 8. PROJECT CASE STUDY MODAL (Mobile Bottom Sheet / Desktop Dialog) -->
@@ -559,6 +464,16 @@
             </div>
 
             <div class="space-y-5">
+                <div class="hidden">
+                    <h4 class="font-mono text-xs uppercase tracking-wider text-zinc-500 mb-2.5">Architecture Pipeline</h4>
+                    <div id="modal-flow" class="flex flex-wrap items-center gap-1.5"></div>
+                </div>
+
+                <div class="hidden">
+                    <h4 class="font-mono text-xs uppercase tracking-wider text-zinc-500 mb-2.5">Impact Metrics</h4>
+                    <div id="modal-impact" class="flex flex-wrap gap-2"></div>
+                </div>
+
                 <div>
                     <h4 class="font-mono text-xs uppercase tracking-wider text-zinc-500 mb-2.5">Key Highlights &amp; Impact</h4>
                     <ul id="modal-bullets" class="space-y-2 text-sm text-zinc-300 leading-relaxed"></ul>
@@ -811,5 +726,6 @@
 
     <!-- CORE APPLICATION SCRIPT -->
     <script src="script.js"></script>
+    <script src="footer-crowd.js"></script>
 </body>
 </html>
